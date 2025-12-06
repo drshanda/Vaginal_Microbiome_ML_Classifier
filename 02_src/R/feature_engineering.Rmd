@@ -1,0 +1,158 @@
+---
+title: "Feature Enginnering for Vaginal_Microbiome_ML_Classifier"
+author: "LaShanda Williams, PhD"
+date: "December 6, 2025"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+    theme: cosmo
+---
+
+```{r}
+library(readxl)
+library(tidyverse)
+library(ALDEx2)
+library(vegan)
+```
+
+
+```{r}
+otu_file <- "../../01_data/raw/zmeh_a_11816030_sm0001.xlsx"
+meta_file <- "../../01_data/raw/zmeh_a_11816030_sm0002.xlsx"
+
+SAMPLE_ID_COLUMN_META <- "#SampleID"
+```
+
+```{r}
+df_otu <- read_excel(otu_file, col_names = TRUE, skip = 1)
+df_meta <- read_excel(meta_file, col_names = TRUE, skip = 1)
+
+names(df_otu)[1] <- "OTU_ID"
+names(df_meta)[1] <- "Sample_ID"
+
+```
+
+```{r}
+otu_counts_final <- df_otu %>%
+    column_to_rownames("OTU_ID") %>%
+    mutate(across(everything(), as.numeric)) %>%
+    mutate(across(everything(), ~replace_na(., 0))) %>%
+    mutate(across(everything(), as.integer))
+
+STATUS_PATTERN <- "[a-z]+$"
+
+metadata_aligned <- df_meta %>%
+    filter(time == 0) %>%
+    mutate(Status_Code = str_extract(Sample_ID, pattern = STATUS_PATTERN)) %>%
+    mutate(Status_Code = tolower(Status_Code)) %>%
+    mutate(Sample_ID = trimws(Sample_ID)) %>%
+    column_to_rownames("Sample_ID")
+```
+
+
+```{r}
+common_samples <- intersect(colnames(otu_counts_final), rownames(metadata_aligned))
+otu_counts_final <- otu_counts_final[, common_samples]
+metadata_aligned <- metadata_aligned[common_samples, ]
+```
+
+
+```{r}
+min_prevalence <- 5 
+min_count <- 10    
+
+otus_to_keep <- rowSums(otu_counts_final > 0) >= min_prevalence &
+                rowSums(otu_counts_final) >= min_count
+
+otu_counts_final <- otu_counts_final[otus_to_keep, ]
+
+# --- Remove zero-sum samples ---
+zero_samples <- which(colSums(otu_counts_final) == 0)
+if (length(zero_samples) > 0) {
+    otu_counts_final <- otu_counts_final[, -zero_samples]
+    metadata_aligned <- metadata_aligned[colnames(otu_counts_final), ]
+}
+
+cat("Final Aligned Samples:", ncol(otu_counts_final), "\n")
+cat("Final Features Remaining:", nrow(otu_counts_final), "\n")
+```
+
+```{r}
+condition_vector <- metadata_aligned[colnames(otu_counts_final), "Status_Code"]
+
+clr_results <- aldex.clr(
+    reads = otu_counts_final,
+    conds = as.character(condition_vector),
+    mc.samples = 128,      # proper MC sampling
+    denom = "all",
+    verbose = FALSE,
+    useMC = TRUE           # <- FORCE Monte Carlo sampling
+)
+
+clr_mc <- slot(clr_results, "analysisData")
+
+if (length(clr_mc) < 1) stop("ALDEx2 returned zero CLR Monte Carlo samples.")
+
+num_samples <- length(clr_mc)
+num_features <- nrow(clr_mc[[1]])  # number of features
+clr_feature_matrix <- matrix(NA, nrow = num_samples, ncol = num_features)
+
+sample_ids <- names(clr_mc)
+rownames(clr_feature_matrix) <- sample_ids
+
+for (i in seq_along(clr_mc)) {
+  clr_feature_matrix[i, ] <- rowMeans(clr_mc[[i]])
+}
+
+colnames(clr_feature_matrix) <- paste0("CLR_", rownames(clr_mc[[1]]))
+clr_feature_matrix <- as.data.frame(clr_feature_matrix)
+
+
+
+
+```
+
+
+```{r}
+otu_samples_in_rows <- as.data.frame(t(otu_counts_final))
+
+alpha_diversity <- data.frame(
+    SampleID = rownames(otu_samples_in_rows),
+    Shannon_Index = diversity(otu_samples_in_rows, index = "shannon"),
+    Observed_Richness = specnumber(otu_samples_in_rows)
+)
+
+rownames(alpha_diversity) <- alpha_diversity$SampleID
+alpha_diversity$SampleID <- NULL
+```
+
+```{r}
+metadata_to_join <- metadata_aligned %>% 
+    rownames_to_column("SampleID")
+
+final_features_temp <- clr_feature_matrix %>%
+  rownames_to_column("SampleID") %>%
+  inner_join(alpha_diversity %>% rownames_to_column("SampleID"), by = "SampleID")
+
+df_full_features_with_status <- final_features_temp %>%
+    inner_join(metadata_to_join, by = "SampleID") %>%
+    column_to_rownames("SampleID")
+```
+
+```{r}
+df_bcont <- df_full_features_with_status %>% filter(Status_Code == "bcont")
+df_bbv   <- df_full_features_with_status %>% filter(Status_Code == "bbv")
+df_bvvc  <- df_full_features_with_status %>% filter(Status_Code == "bvvc")
+```
+
+```{r}
+write.csv(df_full_features_with_status, 
+          file = "../../01_data/processed/final_ml_feature_matrix.csv", 
+          row.names = TRUE)
+```
+
+
+
+
+
