@@ -1,2 +1,2 @@
 # Vaginal_Microbiome_ML_Classifier
-Predictive modeling of disease status using compositional 16S rRNA gene sequencing data from the vaginal microbiome
+Completed machine learning pipeline for classifying clinical states using high dimensional metagenomic data. Prioritizes transparency using SHAP Shapley Additive exPlanations for biomarker discovery and clinical validation. MLOps implementation includes MLflow DVC and Docker for model and data lineage and deployment readiness.
