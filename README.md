@@ -276,8 +276,6 @@ This work provides a reproducible, transparent diagnostic pipeline capable of:
 * Supporting research and clinical hypothesis generation
 * Being deployed interactively through a Shiny web application
 
-It represents a complete workflow expected of an **AI/ML Bioinformatics Scientist**—from raw data to statistical validation, machine learning, interpretability, and deployment.
-
 ---
 
 ## 10. Running the Project
