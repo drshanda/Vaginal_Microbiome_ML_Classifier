@@ -2,7 +2,7 @@
 
 This Shiny application provides an interactive interface for exploring vaginal microbiome diagnostics using statistical summaries, machine learning outputs, and explainable AI visualizations. The app supports clinicians, researchers, and students in examining microbial features, model performance, and biomarker signals through a user-friendly dashboard.
 
-##1. Purpose
+## 1. Purpose
 
 This app enables users to:
 - Explore CLR-transformed microbiome features
@@ -13,7 +13,7 @@ This app enables users to:
 
 All machine learning and SHAP computations were performed offline in Python, and the resulting figures are rendered inside the Shiny application.
 
-##2. Key Modules
+## 2. Key Modules
 
 2.1 Data Explorer
 
@@ -41,7 +41,7 @@ All machine learning and SHAP computations were performed offline in Python, and
 - Local SHAP force plot (HTML widget rendered as an iframe)
 All SHAP assets are precomputed offline and displayed as images or embedded HTML.
 
-##3. Application Architecture
+## 3. Application Architecture
 
 The Shiny app is pure R:
 - No Python execution
@@ -54,7 +54,7 @@ Instead, the app loads:
 - Pre-generated figures (03_results/figures/)
 
 
-##4. File Structure
+## 4. File Structure
    
 ```
 04_app_deployment/
@@ -68,14 +68,14 @@ Instead, the app loads:
 
 Place all confusion matrices, SHAP plots, biomarker plots, PCA images, and Dunn test images inside www/.
 
-##5. Running the App Locally
+## 5. Running the App Locally
 
 setwd("04_app_deployment")
 shiny::runApp()
 
 No Python environment is required.
 
-##6. Deployment Status
+## 6. Deployment Status
 
 The Shiny application is fully deployed and publicly accessible:
 https://drshanda.shinyapps.io/microbiome_diagnostics/
