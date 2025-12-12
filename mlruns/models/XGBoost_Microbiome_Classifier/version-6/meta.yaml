@@ -1,0 +1,15 @@
+creation_timestamp: 1765204802986
+current_stage: None
+deployment_job_state: null
+description: null
+last_updated_timestamp: 1765204802986
+model_id: m-e14d5dae46884bdfbd84976d8e1ff906
+name: XGBoost_Microbiome_Classifier
+run_id: 268f39dbd8634b159e593ef97b7aa9f9
+run_link: null
+source: models:/m-e14d5dae46884bdfbd84976d8e1ff906
+status: READY
+status_message: null
+storage_location: file:///Users/lashandawilliams/Vaginal_Microbiome_ML_Classifier/mlruns/597937348828957066/models/m-e14d5dae46884bdfbd84976d8e1ff906/artifacts
+user_id: null
+version: 6

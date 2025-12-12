@@ -1,0 +1,15 @@
+creation_timestamp: 1765231131961
+current_stage: None
+deployment_job_state: null
+description: null
+last_updated_timestamp: 1765231131961
+model_id: m-714a8db27bc144e79ce01c9bf6188a5d
+name: RandomForest_Tuned_Microbiome_Classifier
+run_id: 2f72aa0ce74d459c95d13a169cb9fca5
+run_link: null
+source: models:/m-714a8db27bc144e79ce01c9bf6188a5d
+status: READY
+status_message: null
+storage_location: file:///Users/lashandawilliams/Vaginal_Microbiome_ML_Classifier/mlruns/597937348828957066/models/m-714a8db27bc144e79ce01c9bf6188a5d/artifacts
+user_id: null
+version: 21

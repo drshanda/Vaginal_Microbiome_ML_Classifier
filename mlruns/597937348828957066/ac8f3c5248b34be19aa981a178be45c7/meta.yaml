@@ -1,0 +1,14 @@
+artifact_uri: file:///Users/lashandawilliams/Vaginal_Microbiome_ML_Classifier/mlruns/597937348828957066/ac8f3c5248b34be19aa981a178be45c7/artifacts
+end_time: 1765205243290
+entry_point_name: ''
+experiment_id: '597937348828957066'
+lifecycle_stage: active
+run_id: ac8f3c5248b34be19aa981a178be45c7
+run_name: RF_Candidate_0
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1765205243285
+status: 3
+tags: []
+user_id: lashandawilliams

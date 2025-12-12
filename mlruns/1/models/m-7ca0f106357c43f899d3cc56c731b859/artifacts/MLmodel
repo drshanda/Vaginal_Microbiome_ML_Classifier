@@ -1,0 +1,22 @@
+artifact_path: /Users/lashandawilliams/Vaginal_Microbiome_ML_Classifier/mlruns/1/models/m-7ca0f106357c43f899d3cc56c731b859/artifacts
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.pkl
+    predict_fn: predict
+    python_version: 3.13.5
+  sklearn:
+    code: null
+    pickled_model: model.pkl
+    serialization_format: cloudpickle
+    sklearn_version: 1.6.1
+mlflow_version: 3.7.0
+model_id: m-7ca0f106357c43f899d3cc56c731b859
+model_size_bytes: 1623378
+model_uuid: m-7ca0f106357c43f899d3cc56c731b859
+prompts: null
+run_id: 245d112a1914468e9a5cc087b41bb355
+utc_time_created: '2025-12-08 04:08:03.958066'

@@ -1,0 +1,1051 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Microbiome Feature Analysis},
+  pdfauthor={LaShanda Williams, PhD},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Microbiome Feature Analysis}
+\author{LaShanda Williams, PhD}
+\date{December 6, 2025}
+
+\begin{document}
+\maketitle
+
+{
+\setcounter{tocdepth}{3}
+\tableofcontents
+}
+\subsection{Research Summary}\label{research-summary}
+
+The final analysis provides the definitive statistical evidence needed
+to fully validate your ML model and interpret the roles of your top 5
+CLR biomarkers. The key findings confirm that the BV state is profoundly
+distinct, but the VVC co-infection state is statistically inseparable
+from the healthy control when using most individual biomarkers,
+validating the necessity of your complex multivariate ML approach.
+
+\subsection{Key Statistical
+Conclusions}\label{key-statistical-conclusions}
+
+\subsubsection{1. Multivariate Validation (Overall Feature
+Structure)}\label{multivariate-validation-overall-feature-structure}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Overall Structural Difference (PERMANOVA):} The microbial
+  feature profiles are \textbf{significantly different} across the three
+  clinical groups (\(\mathbf{F}=12.543\), \(\mathbf{P=0.001}\)).
+  Clinical status accounts for \(\mathbf{13.48\%}\) of the total
+  variance (\(\text{R}^2 = 0.13481\)), confirming the data is suitable
+  for \(\text{ML}\) classification.
+\item
+  \textbf{Group Variability (BETADISPER):} The variability (dispersion)
+  within the groups is also \textbf{significantly different}
+  (\(\mathbf{F}=5.9679\), \(\mathbf{P=0.003}\)). This is common in
+  disease states and confirms the \(\text{BV}\) and \(\text{VVC}\)
+  groups are more heterogeneous than the healthy control.
+\item
+  \textbf{Pairwise Distinction:} \(\text{Post-hoc}\)
+  \(\text{PERMANOVA}\) confirmed that every single group comparison
+  (\(\text{bbv}\) vs \(\text{bcont}\), \(\text{bbv}\) vs
+  \(\text{bvvc}\), \(\text{bcont}\) vs \(\text{bvvc}\)) shows a
+  \textbf{highly significant difference}
+  (\(\mathbf{FDR\_P\_Value = 0.001}\)). This validates that each state
+  occupies a unique, separable multivariate space.
+\end{itemize}
+
+\subsubsection{2. Univariate Biomarker Efficacy (Dunn's
+Test)}\label{univariate-biomarker-efficacy-dunns-test}
+
+The Dunn's tests define the strength and limitations of your top 5
+\(\text{CLR}\) biomarkers (\(\text{CLR 1}\), \(\text{CLR 43}\),
+\(\text{CLR 17}\), \(\text{CLR 14}\), \(\text{CLR 3}\)).
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Powerful Predictors for BV:} All five \(\text{CLR}\) features
+  are overwhelmingly powerful at distinguishing the \(\text{BV}\) state
+  (\(\text{bbv}\)) from \(\text{Healthy}\) (\(\text{bcont}\)). For
+  example, \(\text{CLR 1}\) is the \textbf{most significant overall}
+  (\(\mathbf{P.adj} = 2.06 \times 10^{-18}\)).
+\item
+  \textbf{The Critical Failure (VVC Co-infection vs.~Health):}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{Four of the five top \(\text{CLR}\) features are
+    statistically insignificant} in separating the \(\text{Healthy}\)
+    control (\(\text{bcont}\)) from the \(\text{VVC}\) co-infection
+    (\(\text{bvvc}\)) (\(\text{P.adj}\) ranged from \(0.351\) to
+    \(0.986\)).
+  \item
+    \textbf{Crucial Exception:} \textbf{\(\text{CLR 14}\)} is the only
+    univariate feature in the top 5 that maintains a \textbf{significant
+    difference} between \(\text{bcont}\) and \(\text{bvvc}\)
+    (\(\mathbf{P.adj = 0.0017}\)).
+  \end{itemize}
+\end{itemize}
+
+\subsubsection{3. Overall ML Rationale}\label{overall-ml-rationale}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Necessity of Multivariate Model:} The Random Forest model
+  cannot rely on \(\text{CLR 1}\), \(\text{CLR 17}\), \(\text{CLR 3}\),
+  or \(\text{CLR 43}\) alone to classify the most ambiguous group
+  (\(\text{bcont}\) vs.~\(\text{bvvc}\)).
+\item
+  \textbf{Validation:} The model must leverage the subtle, multivariate
+  information (confirmed by \(\text{PERMANOVA}\)) and the singular power
+  of \(\text{CLR 14}\) to achieve its high accuracy for the
+  \(\text{VVC}\) classification. This validates the need for a complex,
+  holistic \(\text{ML}\) approach over simple biomarker thresholds.
+\end{itemize}
+
+\subsection{1. Data Processing and Feature
+Engineering}\label{data-processing-and-feature-engineering}
+
+\subsubsection{1.1 Load Libraries and Raw
+Data}\label{load-libraries-and-raw-data}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(readxl)}
+\FunctionTok{library}\NormalTok{(tidyverse)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## -- Attaching core tidyverse packages ------------------------ tidyverse 2.0.0 --
+## v dplyr     1.1.4     v readr     2.1.6
+## v forcats   1.0.1     v stringr   1.6.0
+## v ggplot2   4.0.1     v tibble    3.3.0
+## v lubridate 1.9.4     v tidyr     1.3.1
+## v purrr     1.2.0     
+## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()
+## i Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(ALDEx2)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Loading required package: zCompositions
+## Loading required package: MASS
+## 
+## Attaching package: 'MASS'
+## 
+## The following object is masked from 'package:dplyr':
+## 
+##     select
+## 
+## Loading required package: truncnorm
+## Loading required package: survival
+## Loading required package: lattice
+## Loading required package: latticeExtra
+## 
+## Attaching package: 'latticeExtra'
+## 
+## The following object is masked from 'package:ggplot2':
+## 
+##     layer
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(vegan)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Loading required package: permute
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(rstatix)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Attaching package: 'rstatix'
+## 
+## The following object is masked from 'package:MASS':
+## 
+##     select
+## 
+## The following object is masked from 'package:stats':
+## 
+##     filter
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(ggpubr)}
+\FunctionTok{library}\NormalTok{(stats)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{otu\_file }\OtherTok{\textless{}{-}} \StringTok{"../../01\_data/raw/zmeh\_a\_11816030\_sm0001.xlsx"}
+\NormalTok{meta\_file }\OtherTok{\textless{}{-}} \StringTok{"../../01\_data/raw/zmeh\_a\_11816030\_sm0002.xlsx"}
+
+\NormalTok{SAMPLE\_ID\_COLUMN\_META }\OtherTok{\textless{}{-}} \StringTok{"\#SampleID"}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df\_otu }\OtherTok{\textless{}{-}} \FunctionTok{read\_excel}\NormalTok{(otu\_file, }\AttributeTok{col\_names =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{skip =} \DecValTok{1}\NormalTok{)}
+\NormalTok{df\_meta }\OtherTok{\textless{}{-}} \FunctionTok{read\_excel}\NormalTok{(meta\_file, }\AttributeTok{col\_names =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{skip =} \DecValTok{1}\NormalTok{)}
+
+\FunctionTok{names}\NormalTok{(df\_otu)[}\DecValTok{1}\NormalTok{] }\OtherTok{\textless{}{-}} \StringTok{"OTU\_ID"}
+\FunctionTok{names}\NormalTok{(df\_meta)[}\DecValTok{1}\NormalTok{] }\OtherTok{\textless{}{-}} \StringTok{"Sample\_ID"}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{otu\_counts\_final }\OtherTok{\textless{}{-}}\NormalTok{ df\_otu }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{column\_to\_rownames}\NormalTok{(}\StringTok{"OTU\_ID"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{mutate}\NormalTok{(}\FunctionTok{across}\NormalTok{(}\FunctionTok{everything}\NormalTok{(), as.numeric)) }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{mutate}\NormalTok{(}\FunctionTok{across}\NormalTok{(}\FunctionTok{everything}\NormalTok{(), }\SpecialCharTok{\textasciitilde{}}\FunctionTok{replace\_na}\NormalTok{(., }\DecValTok{0}\NormalTok{))) }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{mutate}\NormalTok{(}\FunctionTok{across}\NormalTok{(}\FunctionTok{everything}\NormalTok{(), as.integer))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: There was 1 warning in `mutate()`.
+## i In argument: `across(everything(), as.numeric)`.
+## Caused by warning:
+## ! NAs introduced by coercion
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{STATUS\_PATTERN }\OtherTok{\textless{}{-}} \StringTok{"[a{-}z]+$"}
+
+\NormalTok{metadata\_aligned }\OtherTok{\textless{}{-}}\NormalTok{ df\_meta }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{filter}\NormalTok{(time }\SpecialCharTok{==} \DecValTok{0}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Status\_Code =} \FunctionTok{str\_extract}\NormalTok{(Sample\_ID, }\AttributeTok{pattern =}\NormalTok{ STATUS\_PATTERN)) }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Status\_Code =} \FunctionTok{tolower}\NormalTok{(Status\_Code)) }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Sample\_ID =} \FunctionTok{trimws}\NormalTok{(Sample\_ID)) }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{column\_to\_rownames}\NormalTok{(}\StringTok{"Sample\_ID"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{common\_samples }\OtherTok{\textless{}{-}} \FunctionTok{intersect}\NormalTok{(}\FunctionTok{colnames}\NormalTok{(otu\_counts\_final), }\FunctionTok{rownames}\NormalTok{(metadata\_aligned))}
+\NormalTok{otu\_counts\_final }\OtherTok{\textless{}{-}}\NormalTok{ otu\_counts\_final[, common\_samples]}
+\NormalTok{metadata\_aligned }\OtherTok{\textless{}{-}}\NormalTok{ metadata\_aligned[common\_samples, ]}
+\end{Highlighting}
+\end{Shaded}
+
+\subsubsection{1.2 Data Filtering and
+Preparation}\label{data-filtering-and-preparation}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{min\_prevalence }\OtherTok{\textless{}{-}} \DecValTok{5} 
+\NormalTok{min\_count }\OtherTok{\textless{}{-}} \DecValTok{10}    
+
+\NormalTok{otus\_to\_keep }\OtherTok{\textless{}{-}} \FunctionTok{rowSums}\NormalTok{(otu\_counts\_final }\SpecialCharTok{\textgreater{}} \DecValTok{0}\NormalTok{) }\SpecialCharTok{\textgreater{}=}\NormalTok{ min\_prevalence }\SpecialCharTok{\&}
+                \FunctionTok{rowSums}\NormalTok{(otu\_counts\_final) }\SpecialCharTok{\textgreater{}=}\NormalTok{ min\_count}
+
+\NormalTok{otu\_counts\_final }\OtherTok{\textless{}{-}}\NormalTok{ otu\_counts\_final[otus\_to\_keep, ]}
+
+\CommentTok{\# {-}{-}{-} Remove zero{-}sum samples {-}{-}{-}}
+\NormalTok{zero\_samples }\OtherTok{\textless{}{-}} \FunctionTok{which}\NormalTok{(}\FunctionTok{colSums}\NormalTok{(otu\_counts\_final) }\SpecialCharTok{==} \DecValTok{0}\NormalTok{)}
+\ControlFlowTok{if}\NormalTok{ (}\FunctionTok{length}\NormalTok{(zero\_samples) }\SpecialCharTok{\textgreater{}} \DecValTok{0}\NormalTok{) \{}
+\NormalTok{    otu\_counts\_final }\OtherTok{\textless{}{-}}\NormalTok{ otu\_counts\_final[, }\SpecialCharTok{{-}}\NormalTok{zero\_samples]}
+\NormalTok{    metadata\_aligned }\OtherTok{\textless{}{-}}\NormalTok{ metadata\_aligned[}\FunctionTok{colnames}\NormalTok{(otu\_counts\_final), ]}
+\NormalTok{\}}
+
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Final Aligned Samples:"}\NormalTok{, }\FunctionTok{ncol}\NormalTok{(otu\_counts\_final), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Final Aligned Samples: 164
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Final Features Remaining:"}\NormalTok{, }\FunctionTok{nrow}\NormalTok{(otu\_counts\_final), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Final Features Remaining: 77
+\end{verbatim}
+
+\subsubsection{1.3 Centered Log-Ratio (CLR)
+Transformation}\label{centered-log-ratio-clr-transformation}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{condition\_vector }\OtherTok{\textless{}{-}}\NormalTok{ metadata\_aligned[}\FunctionTok{colnames}\NormalTok{(otu\_counts\_final), }\StringTok{"Status\_Code"}\NormalTok{]}
+
+\NormalTok{clr\_results }\OtherTok{\textless{}{-}} \FunctionTok{aldex.clr}\NormalTok{(}
+    \AttributeTok{reads =}\NormalTok{ otu\_counts\_final,}
+    \AttributeTok{conds =} \FunctionTok{as.character}\NormalTok{(condition\_vector),}
+    \AttributeTok{mc.samples =} \DecValTok{128}\NormalTok{,      }\CommentTok{\# proper MC sampling}
+    \AttributeTok{denom =} \StringTok{"all"}\NormalTok{,}
+    \AttributeTok{verbose =} \ConstantTok{FALSE}\NormalTok{,}
+    \AttributeTok{useMC =} \ConstantTok{TRUE}           \CommentTok{\# \textless{}{-} FORCE Monte Carlo sampling}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## conditions vector supplied
+\end{verbatim}
+
+\begin{verbatim}
+## multicore environment is is OK -- using the BiocParallel package
+\end{verbatim}
+
+\begin{verbatim}
+## computing center with all features
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{clr\_mc }\OtherTok{\textless{}{-}} \FunctionTok{slot}\NormalTok{(clr\_results, }\StringTok{"analysisData"}\NormalTok{)}
+
+\ControlFlowTok{if}\NormalTok{ (}\FunctionTok{length}\NormalTok{(clr\_mc) }\SpecialCharTok{\textless{}} \DecValTok{1}\NormalTok{) }\FunctionTok{stop}\NormalTok{(}\StringTok{"ALDEx2 returned zero CLR Monte Carlo samples."}\NormalTok{)}
+
+\NormalTok{num\_samples }\OtherTok{\textless{}{-}} \FunctionTok{length}\NormalTok{(clr\_mc)}
+\NormalTok{num\_features }\OtherTok{\textless{}{-}} \FunctionTok{nrow}\NormalTok{(clr\_mc[[}\DecValTok{1}\NormalTok{]])  }\CommentTok{\# number of features}
+\NormalTok{clr\_feature\_matrix }\OtherTok{\textless{}{-}} \FunctionTok{matrix}\NormalTok{(}\ConstantTok{NA}\NormalTok{, }\AttributeTok{nrow =}\NormalTok{ num\_samples, }\AttributeTok{ncol =}\NormalTok{ num\_features)}
+
+\NormalTok{sample\_ids }\OtherTok{\textless{}{-}} \FunctionTok{names}\NormalTok{(clr\_mc)}
+\FunctionTok{rownames}\NormalTok{(clr\_feature\_matrix) }\OtherTok{\textless{}{-}}\NormalTok{ sample\_ids}
+
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \FunctionTok{seq\_along}\NormalTok{(clr\_mc)) \{}
+\NormalTok{  clr\_feature\_matrix[i, ] }\OtherTok{\textless{}{-}} \FunctionTok{rowMeans}\NormalTok{(clr\_mc[[i]])}
+\NormalTok{\}}
+
+\FunctionTok{colnames}\NormalTok{(clr\_feature\_matrix) }\OtherTok{\textless{}{-}} \FunctionTok{paste0}\NormalTok{(}\StringTok{"CLR\_"}\NormalTok{, }\FunctionTok{rownames}\NormalTok{(clr\_mc[[}\DecValTok{1}\NormalTok{]]))}
+\NormalTok{clr\_feature\_matrix }\OtherTok{\textless{}{-}} \FunctionTok{as.data.frame}\NormalTok{(clr\_feature\_matrix)}
+\end{Highlighting}
+\end{Shaded}
+
+\subsubsection{1.4 Alpha Diversity
+Calculation}\label{alpha-diversity-calculation}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{otu\_samples\_in\_rows }\OtherTok{\textless{}{-}} \FunctionTok{as.data.frame}\NormalTok{(}\FunctionTok{t}\NormalTok{(otu\_counts\_final))}
+
+\NormalTok{alpha\_diversity }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+    \AttributeTok{SampleID =} \FunctionTok{rownames}\NormalTok{(otu\_samples\_in\_rows),}
+    \AttributeTok{Shannon\_Index =} \FunctionTok{diversity}\NormalTok{(otu\_samples\_in\_rows, }\AttributeTok{index =} \StringTok{"shannon"}\NormalTok{),}
+    \AttributeTok{Observed\_Richness =} \FunctionTok{specnumber}\NormalTok{(otu\_samples\_in\_rows)}
+\NormalTok{)}
+
+\FunctionTok{rownames}\NormalTok{(alpha\_diversity) }\OtherTok{\textless{}{-}}\NormalTok{ alpha\_diversity}\SpecialCharTok{$}\NormalTok{SampleID}
+\NormalTok{alpha\_diversity}\SpecialCharTok{$}\NormalTok{SampleID }\OtherTok{\textless{}{-}} \ConstantTok{NULL}
+\end{Highlighting}
+\end{Shaded}
+
+\subsubsection{1.5 Dataset Finalization}\label{dataset-finalization}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{metadata\_to\_join }\OtherTok{\textless{}{-}}\NormalTok{ metadata\_aligned }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{rownames\_to\_column}\NormalTok{(}\StringTok{"SampleID"}\NormalTok{)}
+
+\NormalTok{final\_features\_temp }\OtherTok{\textless{}{-}}\NormalTok{ clr\_feature\_matrix }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{rownames\_to\_column}\NormalTok{(}\StringTok{"SampleID"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{inner\_join}\NormalTok{(alpha\_diversity }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{rownames\_to\_column}\NormalTok{(}\StringTok{"SampleID"}\NormalTok{), }\AttributeTok{by =} \StringTok{"SampleID"}\NormalTok{)}
+
+\NormalTok{df\_full\_features\_with\_status }\OtherTok{\textless{}{-}}\NormalTok{ final\_features\_temp }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{inner\_join}\NormalTok{(metadata\_to\_join, }\AttributeTok{by =} \StringTok{"SampleID"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{column\_to\_rownames}\NormalTok{(}\StringTok{"SampleID"}\NormalTok{)}
+
+\FunctionTok{write.csv}\NormalTok{(df\_full\_features\_with\_status, }
+          \AttributeTok{file =} \StringTok{"../../01\_data/processed/final\_ml\_feature\_matrix.csv"}\NormalTok{, }
+          \AttributeTok{row.names =} \ConstantTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{2. Multivariate Feature
+Validation}\label{multivariate-feature-validation}
+
+\subsubsection{2.1 Global Separation (PERMANOVA \&
+BETADISPER)}\label{global-separation-permanova-betadisper}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df\_full }\OtherTok{\textless{}{-}}\NormalTok{ df\_full\_features\_with\_status }
+
+\FunctionTok{cat}\NormalTok{(}\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{{-}{-}{-} 4. Multivariate Analysis: Principal Component Analysis (PCA) {-}{-}{-}}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## --- 4. Multivariate Analysis: Principal Component Analysis (PCA) ---
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{clr\_cols }\OtherTok{\textless{}{-}} \FunctionTok{grep}\NormalTok{(}\StringTok{"\^{}CLR\_"}\NormalTok{, }\FunctionTok{names}\NormalTok{(df\_full), }\AttributeTok{value =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{df\_pca\_input }\OtherTok{\textless{}{-}}\NormalTok{ df\_full[, clr\_cols]}
+
+\CommentTok{\# Perform PCA}
+\NormalTok{pca\_result }\OtherTok{\textless{}{-}} \FunctionTok{prcomp}\NormalTok{(df\_pca\_input, }\AttributeTok{scale. =} \ConstantTok{TRUE}\NormalTok{)}
+
+\CommentTok{\# Prepare data for plotting (extract PC scores and merge status code)}
+\NormalTok{pca\_scores }\OtherTok{\textless{}{-}} \FunctionTok{as.data.frame}\NormalTok{(pca\_result}\SpecialCharTok{$}\NormalTok{x) }\SpecialCharTok{\%\textgreater{}\%}
+  \CommentTok{\# {-}{-}{-} CRITICAL FIX: Explicitly call dplyr::select to avoid masking error {-}{-}{-}}
+\NormalTok{  dplyr}\SpecialCharTok{::}\FunctionTok{select}\NormalTok{(PC1, PC2) }\SpecialCharTok{\%\textgreater{}\%}
+  \CommentTok{\# Merge the status code back for coloring the plot}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Status\_Code =}\NormalTok{ df\_full}\SpecialCharTok{$}\NormalTok{Status\_Code)}
+
+\CommentTok{\# Prepare data for plotting (extract PC scores and merge status code)}
+\NormalTok{pca\_scores }\OtherTok{\textless{}{-}} \FunctionTok{as.data.frame}\NormalTok{(pca\_result}\SpecialCharTok{$}\NormalTok{x) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(PC1, PC2) }\SpecialCharTok{\%\textgreater{}\%}
+  \CommentTok{\# Merge the status code back for coloring the plot}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Status\_Code =}\NormalTok{ df\_full}\SpecialCharTok{$}\NormalTok{Status\_Code)}
+
+\CommentTok{\# Calculate variance explained for axis labels}
+\NormalTok{variance\_explained }\OtherTok{\textless{}{-}} \FunctionTok{summary}\NormalTok{(pca\_result)}\SpecialCharTok{$}\NormalTok{importance[}\DecValTok{2}\NormalTok{, }\DecValTok{1}\SpecialCharTok{:}\DecValTok{2}\NormalTok{]}
+\NormalTok{pc1\_var }\OtherTok{\textless{}{-}} \FunctionTok{paste0}\NormalTok{(}\StringTok{"PC1 ("}\NormalTok{, }\FunctionTok{round}\NormalTok{(variance\_explained[}\DecValTok{1}\NormalTok{] }\SpecialCharTok{*} \DecValTok{100}\NormalTok{, }\DecValTok{1}\NormalTok{), }\StringTok{"\%)"}\NormalTok{)}
+\NormalTok{pc2\_var }\OtherTok{\textless{}{-}} \FunctionTok{paste0}\NormalTok{(}\StringTok{"PC2 ("}\NormalTok{, }\FunctionTok{round}\NormalTok{(variance\_explained[}\DecValTok{2}\NormalTok{] }\SpecialCharTok{*} \DecValTok{100}\NormalTok{, }\DecValTok{1}\NormalTok{), }\StringTok{"\%)"}\NormalTok{)}
+
+\CommentTok{\# {-}{-}{-} PCA Scatter Plot {-}{-}{-}}
+\NormalTok{p3 }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(pca\_scores, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ PC1, }\AttributeTok{y =}\NormalTok{ PC2, }\AttributeTok{color =}\NormalTok{ Status\_Code)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{size =} \DecValTok{3}\NormalTok{, }\AttributeTok{alpha =} \FloatTok{0.7}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{stat\_ellipse}\NormalTok{(}\AttributeTok{geom =} \StringTok{"polygon"}\NormalTok{, }\AttributeTok{alpha =} \FloatTok{0.1}\NormalTok{, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{fill =}\NormalTok{ Status\_Code)) }\SpecialCharTok{+} \CommentTok{\# Add confidence ellipses}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"PCA of CLR Microbiome Profiles"}\NormalTok{,}
+       \AttributeTok{subtitle =} \StringTok{"Color coded by Clinical Status"}\NormalTok{,}
+       \AttributeTok{x =}\NormalTok{ pc1\_var,}
+       \AttributeTok{y =}\NormalTok{ pc2\_var) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{()}
+\FunctionTok{print}\NormalTok{(p3)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{microbiome_feature_analysis_files/figure-latex/unnamed-chunk-10-1.pdf}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggsave}\NormalTok{(}\StringTok{"\textasciitilde{}/Vaginal\_Microbiome\_ML\_Classifier/03\_results/figures/pca\_plot.png"}\NormalTok{, }\AttributeTok{plot =}\NormalTok{ p3, }\AttributeTok{width =} \DecValTok{7}\NormalTok{, }\AttributeTok{height =} \DecValTok{5}\NormalTok{)}
+
+\FunctionTok{cat}\NormalTok{(}\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{Analysis complete. Examine the PCA plot for visual separation of the three groups."}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Analysis complete. Examine the PCA plot for visual separation of the three groups.
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df\_full }\OtherTok{\textless{}{-}}\NormalTok{ df\_full\_features\_with\_status }\CommentTok{\# Using the full dataframe from the R code execution context}
+
+\CommentTok{\# {-}{-}{-} Step 5.1: Prepare Data {-}{-}{-}}
+\CommentTok{\# PCA was run on CLR features; we must use the same set of features.}
+\NormalTok{clr\_cols }\OtherTok{\textless{}{-}} \FunctionTok{grep}\NormalTok{(}\StringTok{"\^{}CLR\_"}\NormalTok{, }\FunctionTok{names}\NormalTok{(df\_full), }\AttributeTok{value =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{df\_clr\_input }\OtherTok{\textless{}{-}}\NormalTok{ df\_full[, clr\_cols]}
+
+\CommentTok{\# {-}{-}{-} Step 5.2: Calculate the Distance Matrix {-}{-}{-}}
+\CommentTok{\# Euclidean distance is appropriate for CLR{-}transformed data (Aitchison distance).}
+\NormalTok{dist\_matrix }\OtherTok{\textless{}{-}} \FunctionTok{dist}\NormalTok{(df\_clr\_input, }\AttributeTok{method =} \StringTok{"euclidean"}\NormalTok{)}
+
+\CommentTok{\# {-}{-}{-} Step 5.3: PERMANOVA Test (Test for centroid separation) {-}{-}{-}}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{{-}{-}{-} 5. PERMANOVA Test (Centroid Separation) {-}{-}{-}}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## --- 5. PERMANOVA Test (Centroid Separation) ---
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{permanova\_result }\OtherTok{\textless{}{-}} \FunctionTok{adonis2}\NormalTok{(dist\_matrix }\SpecialCharTok{\textasciitilde{}}\NormalTok{ Status\_Code, }\AttributeTok{data =}\NormalTok{ df\_full, }\AttributeTok{permutations =} \DecValTok{999}\NormalTok{)}
+\FunctionTok{print}\NormalTok{(permanova\_result)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Permutation test for adonis under reduced model
+## Permutation: free
+## Number of permutations: 999
+## 
+## adonis2(formula = dist_matrix ~ Status_Code, data = df_full, permutations = 999)
+##           Df SumOfSqs      R2     F Pr(>F)    
+## Model      2     8796 0.13478 12.54  0.001 ***
+## Residual 161    56464 0.86522                 
+## Total    163    65259 1.00000                 
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{{-}{-}{-} 6. BETADISPER Test (Homogeneity of Dispersion) {-}{-}{-}}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## --- 6. BETADISPER Test (Homogeneity of Dispersion) ---
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{dispersion }\OtherTok{\textless{}{-}} \FunctionTok{betadisper}\NormalTok{(dist\_matrix, df\_full}\SpecialCharTok{$}\NormalTok{Status\_Code)}
+\NormalTok{betadisper\_result }\OtherTok{\textless{}{-}} \FunctionTok{permutest}\NormalTok{(dispersion, }\AttributeTok{permutations =} \DecValTok{999}\NormalTok{)}
+\FunctionTok{print}\NormalTok{(betadisper\_result)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Permutation test for homogeneity of multivariate dispersions
+## Permutation: free
+## Number of permutations: 999
+## 
+## Response: Distances
+##            Df  Sum Sq Mean Sq      F N.Perm Pr(>F)   
+## Groups      2   90.89  45.444 6.0969    999  0.004 **
+## Residuals 161 1200.02   7.454                        
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+\subsubsection{2.2 Post-Hoc Pairwise
+PERMANOVA}\label{post-hoc-pairwise-permanova}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# 1. {-}{-}{-} Setup and Data Loading {-}{-}{-}}
+\CommentTok{\# Attempt to load the final feature matrix}
+\FunctionTok{tryCatch}\NormalTok{(\{}
+\NormalTok{    df\_full }\OtherTok{\textless{}{-}} \FunctionTok{read\_csv}\NormalTok{(}\StringTok{"final\_ml\_feature\_matrix.csv"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+        \FunctionTok{rename}\NormalTok{(}\AttributeTok{SampleID =} \StringTok{\textquotesingle{}...1\textquotesingle{}}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+        \FunctionTok{column\_to\_rownames}\NormalTok{(}\StringTok{"SampleID"}\NormalTok{)}
+\NormalTok{\}, }\AttributeTok{error =} \ControlFlowTok{function}\NormalTok{(e) \{}
+    \CommentTok{\# Fallback path (use if the file is not in the working directory)}
+\NormalTok{    df\_full }\OtherTok{\textless{}{-}} \FunctionTok{read\_csv}\NormalTok{(}\StringTok{"../../01\_data/processed/final\_ml\_feature\_matrix.csv"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+        \FunctionTok{rename}\NormalTok{(}\AttributeTok{SampleID =} \StringTok{\textquotesingle{}...1\textquotesingle{}}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+        \FunctionTok{column\_to\_rownames}\NormalTok{(}\StringTok{"SampleID"}\NormalTok{)}
+\NormalTok{\})}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## New names:
+## Rows: 164 Columns: 116
+## -- Column specification
+## -------------------------------------------------------- Delimiter: "," chr
+## (32): ...1, Ltag-Rtag, study, probio, b_contra, b_horm, b_reg, b_recur, ... dbl
+## (83): CLR_0, CLR_1, CLR_2, CLR_3, CLR_4, CLR_5, CLR_6, CLR_7, CLR_8, CLR... lgl
+## (1): CD4_count
+## i Use `spec()` to retrieve the full column specification for this data. i
+## Specify the column types or set `show_col_types = FALSE` to quiet this message.
+## * `` -> `...1`
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Define the features for analysis}
+\NormalTok{clr\_cols }\OtherTok{\textless{}{-}} \FunctionTok{grep}\NormalTok{(}\StringTok{"\^{}CLR\_"}\NormalTok{, }\FunctionTok{names}\NormalTok{(df\_full), }\AttributeTok{value =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{top\_biomarkers }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"CLR\_1"}\NormalTok{, }\StringTok{"CLR\_43"}\NormalTok{, }\StringTok{"CLR\_17"}\NormalTok{, }\StringTok{"CLR\_14"}\NormalTok{, }\StringTok{"CLR\_3"}\NormalTok{)}
+
+\FunctionTok{cat}\NormalTok{(}\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{========================================================}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## ========================================================
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"1. Pairwise PERMANOVA for CLR Microbial Profiles (FDR Corrected)}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 1. Pairwise PERMANOVA for CLR Microbial Profiles (FDR Corrected)
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"========================================================}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## ========================================================
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# {-}{-}{-} 2. Pairwise PERMANOVA (Multivariate Post{-}Hoc) {-}{-}{-}}
+\CommentTok{\# Calculate the distance matrix on CLR features}
+\NormalTok{dist\_matrix }\OtherTok{\textless{}{-}} \FunctionTok{dist}\NormalTok{(df\_full[, clr\_cols], }\AttributeTok{method =} \StringTok{"euclidean"}\NormalTok{)}
+\NormalTok{groups }\OtherTok{\textless{}{-}}\NormalTok{ df\_full}\SpecialCharTok{$}\NormalTok{Status\_Code}
+
+\NormalTok{pairwise\_permanova\_results }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{()}
+\NormalTok{group\_levels }\OtherTok{\textless{}{-}} \FunctionTok{levels}\NormalTok{(}\FunctionTok{factor}\NormalTok{(groups))}
+
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{(}\FunctionTok{length}\NormalTok{(group\_levels) }\SpecialCharTok{{-}} \DecValTok{1}\NormalTok{)) \{}
+    \ControlFlowTok{for}\NormalTok{ (j }\ControlFlowTok{in}\NormalTok{ (i }\SpecialCharTok{+} \DecValTok{1}\NormalTok{)}\SpecialCharTok{:}\FunctionTok{length}\NormalTok{(group\_levels)) \{}
+\NormalTok{        group1 }\OtherTok{\textless{}{-}}\NormalTok{ group\_levels[i]}
+\NormalTok{        group2 }\OtherTok{\textless{}{-}}\NormalTok{ group\_levels[j]}
+
+        \CommentTok{\# Subset data for the pair}
+\NormalTok{        subset\_samples }\OtherTok{\textless{}{-}}\NormalTok{ df\_full }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{filter}\NormalTok{(Status\_Code }\SpecialCharTok{\%in\%} \FunctionTok{c}\NormalTok{(group1, group2))}
+\NormalTok{        subset\_dist }\OtherTok{\textless{}{-}} \FunctionTok{dist}\NormalTok{(subset\_samples[, clr\_cols], }\AttributeTok{method =} \StringTok{"euclidean"}\NormalTok{)}
+
+        \CommentTok{\# Run PERMANOVA on the subset}
+\NormalTok{        res }\OtherTok{\textless{}{-}} \FunctionTok{adonis2}\NormalTok{(subset\_dist }\SpecialCharTok{\textasciitilde{}}\NormalTok{ Status\_Code, }\AttributeTok{data =}\NormalTok{ subset\_samples, }\AttributeTok{permutations =} \DecValTok{999}\NormalTok{)}
+
+        \CommentTok{\# Store results}
+\NormalTok{        pairwise\_permanova\_results }\OtherTok{\textless{}{-}} \FunctionTok{rbind}\NormalTok{(pairwise\_permanova\_results, }\FunctionTok{data.frame}\NormalTok{(}
+            \AttributeTok{Comparison =} \FunctionTok{paste}\NormalTok{(group1, }\StringTok{"vs"}\NormalTok{, group2),}
+            \AttributeTok{R2 =}\NormalTok{ res}\SpecialCharTok{$}\NormalTok{R2[}\DecValTok{1}\NormalTok{],}
+            \AttributeTok{P\_Value =}\NormalTok{ res}\SpecialCharTok{$}\StringTok{\textasciigrave{}}\AttributeTok{Pr(\textgreater{}F)}\StringTok{\textasciigrave{}}\NormalTok{[}\DecValTok{1}\NormalTok{]}
+\NormalTok{        ))}
+\NormalTok{    \}}
+\NormalTok{\}}
+
+\CommentTok{\# Apply FDR correction (Benjamini{-}Hochberg)}
+\NormalTok{pairwise\_permanova\_results }\OtherTok{\textless{}{-}}\NormalTok{ pairwise\_permanova\_results }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{mutate}\NormalTok{(}\AttributeTok{FDR\_P\_Value =} \FunctionTok{p.adjust}\NormalTok{(P\_Value, }\AttributeTok{method =} \StringTok{"fdr"}\NormalTok{))}
+
+\FunctionTok{print}\NormalTok{(pairwise\_permanova\_results)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##      Comparison         R2 P_Value FDR_P_Value
+## 1  bbv vs bcont 0.13433218   0.001       0.001
+## 2   bbv vs bvvc 0.12472077   0.001       0.001
+## 3 bcont vs bvvc 0.04121446   0.001       0.001
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{Interpretation: FDR{-}adjusted P{-}values test if each pair\textquotesingle{}s microbial profile is significantly different.}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Interpretation: FDR-adjusted P-values test if each pair's microbial profile is significantly different.
+\end{verbatim}
+
+\subsection{3. Univariate Biomarker
+Validation}\label{univariate-biomarker-validation}
+
+\subsubsection{3.1 Post-Hoc Dunn's Test}\label{post-hoc-dunns-test}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{========================================================}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## ========================================================
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"2. Post{-}Hoc Dunn\textquotesingle{}s Test on Top Biomarkers (FDR Corrected)}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 2. Post-Hoc Dunn's Test on Top Biomarkers (FDR Corrected)
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"========================================================}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## ========================================================
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# {-}{-}{-} 3. Post{-}Hoc Dunn\textquotesingle{}s Test (Non{-}Parametric Univariate Post{-}Hoc) {-}{-}{-}}
+\NormalTok{dunn\_test\_results }\OtherTok{\textless{}{-}}\NormalTok{ df\_full }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{select}\NormalTok{(Status\_Code, }\FunctionTok{all\_of}\NormalTok{(top\_biomarkers)) }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{pivot\_longer}\NormalTok{(}\SpecialCharTok{{-}}\NormalTok{Status\_Code, }\AttributeTok{names\_to =} \StringTok{"Feature"}\NormalTok{, }\AttributeTok{values\_to =} \StringTok{"Value"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{group\_by}\NormalTok{(Feature) }\SpecialCharTok{\%\textgreater{}\%}
+    \CommentTok{\# Performs Dunn\textquotesingle{}s test for all pairs of groups, automatically applying FDR correction}
+    \FunctionTok{dunn\_test}\NormalTok{(Value }\SpecialCharTok{\textasciitilde{}}\NormalTok{ Status\_Code, }\AttributeTok{p.adjust.method =} \StringTok{"fdr"}\NormalTok{)}
+
+\FunctionTok{print}\NormalTok{(dunn\_test\_results)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 15 x 10
+##    Feature .y.   group1 group2    n1    n2 statistic        p    p.adj
+##  * <chr>   <chr> <chr>  <chr>  <int> <int>     <dbl>    <dbl>    <dbl>
+##  1 CLR_1   Value bbv    bcont     57    58    8.88   6.75e-19 2.02e-18
+##  2 CLR_1   Value bbv    bvvc      57    49    8.21   2.24e-16 3.35e-16
+##  3 CLR_1   Value bcont  bvvc      58    49   -0.293  7.70e- 1 7.70e- 1
+##  4 CLR_14  Value bbv    bcont     57    58   -7.70   1.40e-14 4.21e-14
+##  5 CLR_14  Value bbv    bvvc      57    49   -4.26   2.03e- 5 3.04e- 5
+##  6 CLR_14  Value bcont  bvvc      58    49    3.12   1.82e- 3 1.82e- 3
+##  7 CLR_17  Value bbv    bcont     57    58    8.63   6.06e-18 1.82e-17
+##  8 CLR_17  Value bbv    bvvc      57    49    7.33   2.23e-13 3.35e-13
+##  9 CLR_17  Value bcont  bvvc      58    49   -0.933  3.51e- 1 3.51e- 1
+## 10 CLR_3   Value bbv    bcont     57    58    7.55   4.47e-14 6.71e-14
+## 11 CLR_3   Value bbv    bvvc      57    49    7.74   1.01e-14 3.02e-14
+## 12 CLR_3   Value bcont  bvvc      58    49    0.516  6.06e- 1 6.06e- 1
+## 13 CLR_43  Value bbv    bcont     57    58    8.29   1.10e-16 3.29e-16
+## 14 CLR_43  Value bbv    bvvc      57    49    7.96   1.75e-15 2.63e-15
+## 15 CLR_43  Value bcont  bvvc      58    49    0.0174 9.86e- 1 9.86e- 1
+## # i 1 more variable: p.adj.signif <chr>
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{Interpretation: Compares the rank{-}based location of each biomarker between pairs.}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Interpretation: Compares the rank-based location of each biomarker between pairs.
+\end{verbatim}
+
+\subsubsection{3.2 Pairwise Mann-Whitney U (Wilcoxon Rank-Sum) Tests
+(FDR
+Corrected)}\label{pairwise-mann-whitney-u-wilcoxon-rank-sum-tests-fdr-corrected}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{========================================================}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## ========================================================
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"3. Pairwise Mann{-}Whitney U (Wilcoxon Rank{-}Sum) Tests (FDR Corrected)}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 3. Pairwise Mann-Whitney U (Wilcoxon Rank-Sum) Tests (FDR Corrected)
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"========================================================}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## ========================================================
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# {-}{-}{-} 4. Pairwise Mann{-}Whitney U (Wilcoxon) Tests {-}{-}{-}}
+\NormalTok{wilcox\_results }\OtherTok{\textless{}{-}}\NormalTok{ df\_full }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{select}\NormalTok{(Status\_Code, }\FunctionTok{all\_of}\NormalTok{(top\_biomarkers)) }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{pivot\_longer}\NormalTok{(}\SpecialCharTok{{-}}\NormalTok{Status\_Code, }\AttributeTok{names\_to =} \StringTok{"Feature"}\NormalTok{, }\AttributeTok{values\_to =} \StringTok{"Value"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{group\_by}\NormalTok{(Feature) }\SpecialCharTok{\%\textgreater{}\%}
+    \CommentTok{\# Performs Wilcoxon test for all pairs of groups, automatically applying FDR correction}
+    \FunctionTok{wilcox\_test}\NormalTok{(Value }\SpecialCharTok{\textasciitilde{}}\NormalTok{ Status\_Code, }\AttributeTok{p.adjust.method =} \StringTok{"fdr"}\NormalTok{)}
+
+\FunctionTok{print}\NormalTok{(wilcox\_results)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 15 x 10
+##    Feature .y.   group1 group2    n1    n2 statistic        p    p.adj
+##  * <chr>   <chr> <chr>  <chr>  <int> <int>     <dbl>    <dbl>    <dbl>
+##  1 CLR_1   Value bbv    bcont     57    58        92 2.57e-18 7.71e-18
+##  2 CLR_1   Value bbv    bvvc      57    49        79 7.10e-17 1.06e-16
+##  3 CLR_1   Value bcont  bvvc      58    49      1492 6.59e- 1 6.59e- 1
+##  4 CLR_14  Value bbv    bcont     57    58      2970 1.78e-13 5.34e-13
+##  5 CLR_14  Value bbv    bvvc      57    49      2125 3.97e- 6 5.96e- 6
+##  6 CLR_14  Value bcont  bvvc      58    49       866 5.26e- 4 5.26e- 4
+##  7 CLR_17  Value bbv    bcont     57    58       142 2.93e-17 8.79e-17
+##  8 CLR_17  Value bbv    bvvc      57    49       211 5.96e-14 8.94e-14
+##  9 CLR_17  Value bcont  bvvc      58    49      1600 2.64e- 1 2.64e- 1
+## 10 CLR_3   Value bbv    bcont     57    58       280 1.62e-14 4.86e-14
+## 11 CLR_3   Value bbv    bvvc      57    49       203 4.04e-14 6.06e-14
+## 12 CLR_3   Value bcont  bvvc      58    49      1313 5.01e- 1 5.01e- 1
+## 13 CLR_43  Value bbv    bcont     57    58       222 1.22e-15 1.83e-15
+## 14 CLR_43  Value bbv    bvvc      57    49        93 1.5 e-16 4.50e-16
+## 15 CLR_43  Value bcont  bvvc      58    49      1468 7.71e- 1 7.71e- 1
+## # i 1 more variable: p.adj.signif <chr>
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{Interpretation: Provides an alternative pairwise comparison of feature location.}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Interpretation: Provides an alternative pairwise comparison of feature location.
+\end{verbatim}
+
+\subsubsection{3.2 Visualization of Biomarker
+Distributions}\label{visualization-of-biomarker-distributions}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{plot\_clr\_features }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(data, feature\_name, dunn\_results) \{}
+  
+\NormalTok{  dunn\_feature }\OtherTok{\textless{}{-}}\NormalTok{ dunn\_results }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{filter}\NormalTok{(Feature }\SpecialCharTok{==}\NormalTok{ feature\_name) }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{arrange}\NormalTok{(p.adj) }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{mutate}\NormalTok{(}
+      \AttributeTok{y.position =} \FunctionTok{max}\NormalTok{(data[[feature\_name]], }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{) }\SpecialCharTok{+} \FloatTok{0.2} \SpecialCharTok{*} \FunctionTok{row\_number}\NormalTok{()}
+\NormalTok{    )}
+  
+\NormalTok{  p }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(data, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Status\_Code, }\AttributeTok{y =} \SpecialCharTok{!!}\FunctionTok{sym}\NormalTok{(feature\_name), }\AttributeTok{fill =}\NormalTok{ Status\_Code)) }\SpecialCharTok{+}
+    \FunctionTok{geom\_boxplot}\NormalTok{(}\AttributeTok{alpha =} \FloatTok{0.7}\NormalTok{) }\SpecialCharTok{+}
+    \FunctionTok{geom\_jitter}\NormalTok{(}\AttributeTok{width =} \FloatTok{0.2}\NormalTok{, }\AttributeTok{size =} \FloatTok{1.5}\NormalTok{, }\AttributeTok{alpha =} \FloatTok{0.6}\NormalTok{) }\SpecialCharTok{+}
+    \FunctionTok{labs}\NormalTok{(}
+      \AttributeTok{title =} \FunctionTok{paste}\NormalTok{(}\StringTok{"CLR Abundance of"}\NormalTok{, feature\_name, }\StringTok{"by Clinical Status"}\NormalTok{),}
+      \AttributeTok{x =} \StringTok{"Clinical Status"}\NormalTok{,}
+      \AttributeTok{y =}\NormalTok{ feature\_name}
+\NormalTok{    ) }\SpecialCharTok{+}
+    \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+}
+    \FunctionTok{stat\_pvalue\_manual}\NormalTok{(}
+\NormalTok{      dunn\_feature,}
+      \AttributeTok{hide.ns =} \ConstantTok{TRUE}\NormalTok{,}
+      \AttributeTok{label =} \StringTok{"p.adj.signif"}
+\NormalTok{    )}
+  
+  \FunctionTok{return}\NormalTok{(p)}
+\NormalTok{\}}
+
+\NormalTok{clr1\_plot }\OtherTok{\textless{}{-}} \FunctionTok{plot\_clr\_features}\NormalTok{(df\_full, }\StringTok{"CLR\_1"}\NormalTok{, dunn\_test\_results)}
+\FunctionTok{print}\NormalTok{(clr1\_plot)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{microbiome_feature_analysis_files/figure-latex/unnamed-chunk-16-1.pdf}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggsave}\NormalTok{(}\StringTok{"../../03\_results/figures/clr1\_dunn\_test\_results.png"}\NormalTok{, }\AttributeTok{plot =}\NormalTok{ clr1\_plot)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Saving 6.5 x 4.5 in image
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{clr43\_plot }\OtherTok{\textless{}{-}} \FunctionTok{plot\_clr\_features}\NormalTok{(df\_full, }\StringTok{"CLR\_43"}\NormalTok{, dunn\_test\_results)}
+\FunctionTok{print}\NormalTok{(clr43\_plot)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{microbiome_feature_analysis_files/figure-latex/unnamed-chunk-16-2.pdf}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggsave}\NormalTok{(}\StringTok{"../../03\_results/figures/clr43\_dunn\_test\_results.png"}\NormalTok{, }\AttributeTok{plot =}\NormalTok{ clr43\_plot)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Saving 6.5 x 4.5 in image
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{clr17\_plot }\OtherTok{\textless{}{-}} \FunctionTok{plot\_clr\_features}\NormalTok{(df\_full, }\StringTok{"CLR\_17"}\NormalTok{, dunn\_test\_results)}
+\FunctionTok{print}\NormalTok{(clr17\_plot)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{microbiome_feature_analysis_files/figure-latex/unnamed-chunk-16-3.pdf}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggsave}\NormalTok{(}\StringTok{"../../03\_results/figures/clr17\_dunn\_test\_results.png"}\NormalTok{, }\AttributeTok{plot =}\NormalTok{ clr17\_plot)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Saving 6.5 x 4.5 in image
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{clr14\_plot }\OtherTok{\textless{}{-}} \FunctionTok{plot\_clr\_features}\NormalTok{(df\_full, }\StringTok{"CLR\_14"}\NormalTok{, dunn\_test\_results)}
+\FunctionTok{print}\NormalTok{(clr14\_plot)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{microbiome_feature_analysis_files/figure-latex/unnamed-chunk-16-4.pdf}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggsave}\NormalTok{(}\StringTok{"../../03\_results/figures/clr14\_dunn\_test\_results.png"}\NormalTok{, }\AttributeTok{plot =}\NormalTok{ clr14\_plot)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Saving 6.5 x 4.5 in image
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{clr3\_plot }\OtherTok{\textless{}{-}} \FunctionTok{plot\_clr\_features}\NormalTok{(df\_full, }\StringTok{"CLR\_3"}\NormalTok{, dunn\_test\_results)}
+\FunctionTok{print}\NormalTok{(clr3\_plot)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{microbiome_feature_analysis_files/figure-latex/unnamed-chunk-16-5.pdf}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggsave}\NormalTok{(}\StringTok{"../../03\_results/figures/clr3\_dunn\_test\_results.png"}\NormalTok{, }\AttributeTok{plot =}\NormalTok{ clr3\_plot)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Saving 6.5 x 4.5 in image
+\end{verbatim}
+
+\end{document}

@@ -1,0 +1,10 @@
+artifact_location: file:///Users/lashandawilliams/Vaginal_Microbiome_ML_Classifier/mlruns/597937348828957066/models/m-993e7028b5e8418c86f15a19360d5fb3/artifacts
+creation_timestamp: 1765205387868
+experiment_id: '597937348828957066'
+last_updated_timestamp: 1765205389439
+model_id: m-993e7028b5e8418c86f15a19360d5fb3
+model_type: null
+name: best_rf_model
+source_run_id: a19071041df04702a94d560d9f378012
+status: 2
+status_message: null

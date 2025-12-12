@@ -1,0 +1,452 @@
+---
+title: "Microbiome Feature Analysis"
+author: "LaShanda Williams, PhD"
+date: "December 6, 2025"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float: true
+    theme: cosmo
+  pdf_document:
+    toc: true
+    toc_depth: '3'
+---
+## Research Summary
+
+This analysis applies compositional data–aware statistical methods to identify key bacterial features differentiating clinical vaginal conditions, using both community-wide and taxon-specific approaches. Raw OTU count data were log-centered (CLR) transformed to mitigate compositional bias, and alpha diversity indices were computed to assess ecological structure. Multivariate differences between clinical groups (BV, BVVC, and Healthy) were tested using PERMANOVA, while dispersion differences were evaluated via BETADISPER to ensure that observed separations reflect true centroid shifts rather than increased variability.
+
+Univariate statistical tests (Dunn and Wilcoxon) were conducted on CLR-transformed bacterial features to detect pairwise differences in taxon-level abundance. Multiple hypothesis correction was applied, revealing strong and consistent shifts in bacterial features between BV and both other clinical groups, while BVVC samples remained statistically similar to Healthy controls. Together, these analyses establish BV as the dominant bacterial dysbiosis condition and demonstrate that VVC lacks a robust bacterial signature, forming a biologically grounded foundation for subsequent machine learning classification and SHAP-based interpretability.
+
+## 1. Data Processing and Feature Engineering
+
+### 1.1 Load Libraries and Raw Data
+
+```{r}
+library(readxl)
+library(tidyverse)
+library(ALDEx2)
+library(vegan)
+library(rstatix)
+library(ggpubr)
+library(stats)
+```
+
+```{r}
+otu_file <- "../../01_data/raw/zmeh_a_11816030_sm0001.xlsx"
+meta_file <- "../../01_data/raw/zmeh_a_11816030_sm0002.xlsx"
+```
+
+```{r}
+df_otu <- read_excel(otu_file, col_names = TRUE, skip = 1)
+df_meta <- read_excel(meta_file, col_names = TRUE, skip = 1)
+
+names(df_otu)[1] <- "OTU_ID"
+names(df_meta)[1] <- "Sample_ID"
+
+```
+
+```{r}
+otu_counts_final <- df_otu %>%
+    column_to_rownames("OTU_ID") %>%
+    mutate(across(everything(), as.numeric)) %>%
+    mutate(across(everything(), ~replace_na(., 0))) %>%
+    mutate(across(everything(), as.integer))
+
+STATUS_PATTERN <- "[a-z]+$"
+
+metadata_aligned <- df_meta %>%
+    filter(time == 0) %>%
+    mutate(Status_Code = str_extract(Sample_ID, pattern = STATUS_PATTERN)) %>%
+    mutate(Status_Code = tolower(Status_Code)) %>%
+    mutate(Sample_ID = trimws(Sample_ID)) %>%
+    column_to_rownames("Sample_ID")
+```
+
+
+```{r}
+common_samples <- intersect(colnames(otu_counts_final), rownames(metadata_aligned))
+otu_counts_final <- otu_counts_final[, common_samples]
+metadata_aligned <- metadata_aligned[common_samples, ]
+```
+
+### 1.2 Data Filtering and Preparation
+```{r}
+min_prevalence <- 5 
+min_count <- 10    
+
+otus_to_keep <- rowSums(otu_counts_final > 0) >= min_prevalence &
+                rowSums(otu_counts_final) >= min_count
+
+otu_counts_final <- otu_counts_final[otus_to_keep, ]
+
+# --- Remove zero-sum samples ---
+zero_samples <- which(colSums(otu_counts_final) == 0)
+if (length(zero_samples) > 0) {
+    otu_counts_final <- otu_counts_final[, -zero_samples]
+    metadata_aligned <- metadata_aligned[colnames(otu_counts_final), ]
+}
+
+cat("Final Aligned Samples:", ncol(otu_counts_final), "\n")
+cat("Final Features Remaining:", nrow(otu_counts_final), "\n")
+```
+
+### 1.3 Centered Log-Ratio (CLR) Transformation
+```{r}
+condition_vector <- metadata_aligned[colnames(otu_counts_final), "Status_Code"]
+
+clr_results <- aldex.clr(
+    reads = otu_counts_final,
+    conds = as.character(condition_vector),
+    mc.samples = 128,      
+    denom = "all",
+    verbose = FALSE,
+    useMC = TRUE           
+)
+
+clr_mc <- slot(clr_results, "analysisData")
+
+if (length(clr_mc) < 1) stop("ALDEx2 returned zero CLR Monte Carlo samples.")
+
+num_samples <- length(clr_mc)
+num_features <- nrow(clr_mc[[1]]) 
+clr_feature_matrix <- matrix(NA, nrow = num_samples, ncol = num_features)
+
+sample_ids <- names(clr_mc)
+rownames(clr_feature_matrix) <- sample_ids
+
+for (i in seq_along(clr_mc)) {
+  clr_feature_matrix[i, ] <- rowMeans(clr_mc[[i]])
+}
+
+colnames(clr_feature_matrix) <- paste0("CLR_", rownames(clr_mc[[1]]))
+clr_feature_matrix <- as.data.frame(clr_feature_matrix)
+
+
+
+
+```
+
+### 1.4 Alpha Diversity Calculation
+```{r}
+otu_samples_in_rows <- as.data.frame(t(otu_counts_final))
+
+alpha_diversity <- data.frame(
+    SampleID = rownames(otu_samples_in_rows),
+    Shannon_Index = diversity(otu_samples_in_rows, index = "shannon"),
+    Observed_Richness = specnumber(otu_samples_in_rows)
+)
+
+rownames(alpha_diversity) <- alpha_diversity$SampleID
+alpha_diversity$SampleID <- NULL
+```
+
+
+### 1.5 Dataset Finalization
+```{r}
+metadata_to_join <- metadata_aligned %>% 
+  rownames_to_column("SampleID")
+
+final_features_temp <- clr_feature_matrix %>%
+  rownames_to_column("SampleID") %>%
+  inner_join(alpha_diversity %>% rownames_to_column("SampleID"), by = "SampleID")
+
+df_full_features_with_status <- final_features_temp %>%
+    inner_join(metadata_to_join, by = "SampleID") %>%
+    column_to_rownames("SampleID")
+
+write.csv(df_full_features_with_status, 
+          file = "../../01_data/processed/final_ml_feature_matrix.csv", 
+          row.names = TRUE)
+```
+
+
+## 2. Multivariate Feature Validation
+
+### 2.1 Global Separation (PCA, PERMANOVA, BETADISPER)
+
+First, PCA was performed 
+
+```{r}
+df_full <- df_full_features_with_status 
+clr_cols <- grep("^CLR_", names(df_full), value = TRUE)
+df_pca_input <- df_full[, clr_cols]
+
+pca_result <- prcomp(df_pca_input, scale. = TRUE)
+
+pca_scores <- as.data.frame(pca_result$x) %>%
+  dplyr::select(PC1, PC2) %>%
+  mutate(Status_Code = df_full$Status_Code)
+
+variance_explained <- summary(pca_result)$importance[2, 1:2]
+pc1_var <- paste0("PC1 (", round(variance_explained[1] * 100, 1), "%)")
+pc2_var <- paste0("PC2 (", round(variance_explained[2] * 100, 1), "%)")
+
+p1 <- ggplot(pca_scores, aes(x = PC1, y = PC2, color = Status_Code)) +
+  geom_point(size = 3, alpha = 0.7) +
+  stat_ellipse(geom = "polygon", alpha = 0.1, aes(fill = Status_Code)) +
+  labs(title = "PCA of CLR Microbiome Profiles",
+       subtitle = "Color coded by Clinical Status",
+       x = pc1_var,
+       y = pc2_var) +
+  theme_minimal()
+print(p1)
+ggsave("~/Vaginal_Microbiome_ML_Classifier/03_results/figures/pca_plot.png", plot = p1, width = 7, height = 5)
+
+```
+
+PERMANOVA using CLR-transformed Aitchison distances demonstrated highly significant differences in microbiome composition between clinical groups. 
+  - Microbial community structure differed significantly between at least two clinical groups (p = 0.001).  
+  - ~13.5% of variation in global microbiome composition is explained by clinical classification (R² = 0.1348).  
+
+
+```{r}
+
+clr_cols <- grep("^CLR_", names(df_full), value = TRUE)
+df_clr_input <- df_full[, clr_cols]
+
+dist_matrix <- dist(df_clr_input, method = "euclidean")
+
+permanova_result <- adonis2(dist_matrix ~ Status_Code, data = df_full, permutations = 999)
+print(permanova_result)
+
+```
+A BETADISPER test was performed to ensure that PERMANOVA differences reflect true centroid separation and are not artifacts of differing dispersion.
+  - There is no significant difference in dispersion between groups (p = 0.073).  
+  - Therefore, the significant PERMANOVA findings reflect true compositional shifts, not variation in spread.
+  
+```{r}
+dispersion <- betadisper(dist_matrix, df_full$Status_Code)
+betadisper_result <- permutest(dispersion, permutations = 999)
+print(betadisper_result)
+```
+
+
+
+### 2.2 Post-Hoc Pairwise PERMANOVA
+
+Pairwise PERMANOVA revealed that BV differed substantially from both healthy controls (R² = 0.134) and VVC (R² = 0.125), reflecting the well-characterized, high-diversity dysbiosis associated with BV. In contrast, VVC and healthy microbiomes were much more similar (R² = 0.041), consistent with prior findings that VVC typically retains a Lactobacillus-dominant community structure. All comparisons remained significant after FDR correction (p = 0.001), indicating robust between-group differences driven primarily by BV status.
+
+```{r}
+
+dist_matrix <- dist(df_full[, clr_cols], method = "euclidean")
+groups <- df_full$Status_Code
+
+pairwise_permanova_results <- data.frame()
+group_levels <- levels(factor(groups))
+
+for (i in 1:(length(group_levels) - 1)) {
+    for (j in (i + 1):length(group_levels)) {
+        group1 <- group_levels[i]
+        group2 <- group_levels[j]
+
+        # Subset data for the pair
+        subset_samples <- df_full %>% filter(Status_Code %in% c(group1, group2))
+        subset_dist <- dist(subset_samples[, clr_cols], method = "euclidean")
+
+        # Run PERMANOVA on the subset
+        res <- adonis2(subset_dist ~ Status_Code, data = subset_samples, permutations = 999)
+
+        # Store results
+        pairwise_permanova_results <- rbind(pairwise_permanova_results, data.frame(
+            Comparison = paste(group1, "vs", group2),
+            R2 = res$R2[1],
+            P_Value = res$`Pr(>F)`[1]
+        ))
+    }
+}
+
+# Apply FDR correction (Benjamini-Hochberg)
+pairwise_permanova_results <- pairwise_permanova_results %>%
+    mutate(FDR_P_Value = p.adjust(P_Value, method = "fdr"))
+
+print(pairwise_permanova_results)
+
+```
+
+
+## 3. Univariate Biomarker Validation
+
+### 3.1 Post-Hoc Dunn's Test
+
+Dunn’s post-hoc tests demonstrated that all top CLR biomarkers differed significantly between BV and both healthy controls and VVC (FDR < 1e-14), with effect directions consistent across features (e.g., CLR_1, CLR_17, CLR_3, and CLR_43 elevated in BV; CLR_14 reduced in BV). In contrast, none of these biomarkers differed significantly between healthy and VVC samples. This pattern confirms that BV produces strong taxon-specific shifts in abundance, while VVC maintains a Lactobacillus-dominated profile indistinguishable from healthy controls—consistent with ecological findings from prior studies.
+
+
+```{r}
+
+top_biomarkers <- c("CLR_1", "CLR_14", "CLR_17", "CLR_3", "CLR_43")
+
+dunn_test_results <- df_full %>%
+    select(Status_Code, all_of(top_biomarkers)) %>%
+    pivot_longer(-Status_Code, names_to = "Feature", values_to = "Value") %>%
+    group_by(Feature) %>%
+    # Performs Dunn's test for all pairs of groups, automatically applying FDR correction
+    dunn_test(Value ~ Status_Code, p.adjust.method = "fdr")
+
+print(dunn_test_results)
+```
+
+### 3.2 Visualization of Biomarker Distributions
+
+CLR-feature visualization with Dunn post-hoc tests revealed that all top biomarkers showed strong and significant differences between BV and both healthy controls and VVC (FDR < 1e−14). Boxplots demonstrated large effect sizes, with BV consistently exhibiting markedly lower CLR values for features such as CLR_14 and higher values for features such as CLR_1, CLR_17, CLR_3, and CLR_43. In contrast, no significant differences were observed between the control and VVC groups across these biomarkers (all FDR-adjusted p > 0.05). These findings reinforce the conclusion that BV induces pronounced taxon-level abundance changes, while VVC retains a Lactobacillus-dominated profile that is indistinguishable from the healthy community.
+
+```{r}
+plot_clr_features <- function(data, feature_name, dunn_results) {
+  
+  dunn_feature <- dunn_results %>%
+    filter(Feature == feature_name) %>%
+    arrange(p.adj) %>%
+    mutate(
+      y.position = max(data[[feature_name]], na.rm = TRUE) + 0.2 * row_number()
+    )
+  
+  p <- ggplot(data, aes(x = Status_Code, y = !!sym(feature_name), fill = Status_Code)) +
+    geom_boxplot(alpha = 0.7) +
+    geom_jitter(width = 0.2, size = 1.5, alpha = 0.6) +
+    labs(
+      title = paste("CLR Abundance of", feature_name, "by Clinical Status"),
+      x = "Clinical Status",
+      y = feature_name
+    ) +
+    theme_minimal() +
+    stat_pvalue_manual(
+      dunn_feature,
+      hide.ns = TRUE,
+      label = "p.adj.signif"
+    )
+  
+  return(p)
+}
+
+clr1_plot <- plot_clr_features(df_full, "CLR_1", dunn_test_results)
+print(clr1_plot)
+ggsave("../../03_results/figures/clr1_dunn_test_results.png", plot = clr1_plot)
+
+clr43_plot <- plot_clr_features(df_full, "CLR_43", dunn_test_results)
+print(clr43_plot)
+ggsave("../../03_results/figures/clr43_dunn_test_results.png", plot = clr43_plot)
+
+clr17_plot <- plot_clr_features(df_full, "CLR_17", dunn_test_results)
+print(clr17_plot)
+ggsave("../../03_results/figures/clr17_dunn_test_results.png", plot = clr17_plot)
+
+clr14_plot <- plot_clr_features(df_full, "CLR_14", dunn_test_results)
+print(clr14_plot)
+ggsave("../../03_results/figures/clr14_dunn_test_results.png", plot = clr14_plot)
+
+clr3_plot <- plot_clr_features(df_full, "CLR_3", dunn_test_results)
+print(clr3_plot)
+ggsave("../../03_results/figures/clr3_dunn_test_results.png", plot = clr3_plot)
+
+```
+
+### 3.2 Pairwise Mann-Whitney U (Wilcoxon Rank-Sum) Tests (FDR Corrected)
+
+Wilcoxon rank-sum tests confirmed that all top CLR biomarkers differed significantly between BV and both healthy controls and VVC after FDR correction (p.adj < 1e−13). These results were consistent with Dunn post-hoc tests and revealed large, directionally consistent shifts in CLR abundance associated with BV. In contrast, none of the biomarkers differed significantly between healthy controls and VVC, reinforcing the conclusion that VVC does not produce detectable bacterial dysbiosis. Together, Wilcoxon and Dunn analyses provide strong, convergent evidence of feature-level disruptions specific to BV.
+
+```{r}
+
+wilcox_results <- df_full %>%
+    select(Status_Code, all_of(top_biomarkers)) %>%
+    pivot_longer(-Status_Code, names_to = "Feature", values_to = "Value") %>%
+    group_by(Feature) %>%
+    wilcox_test(Value ~ Status_Code, p.adjust.method = "fdr")
+
+print(wilcox_results)
+```
+
+## Conclusion
+
+Taken together, the multivariate, univariate, and visualization results all tell a very consistent story about these vaginal microbiome profiles and how they differ across clinical groups.
+
+---
+
+## 1. Ordination: PCA
+
+The PCA of CLR features (PC1 ≈ 16.1% variance, PC2 ≈ 7%) visually recapitulates the PERMANOVA findings:
+
+* **BBV (red)** samples cluster on one side of PC1 with a broad, diffuse ellipse, reflecting both a different centroid and higher dispersion.
+* **BCONT (green)** and **BVVC (blue)** form partially overlapping ellipses on the opposite side of PC1, indicating similar centroids and more compact, Lactobacillus-dominated communities.
+* There is clear **separation between BV and non-BV**, but substantial overlap between healthy and VVC.
+
+The PCA thus provides an intuitive geometric picture of the same pattern quantified by PERMANOVA: **BV drives most of the global compositional separation**, while VVC sits much closer to “healthy-like” community states.
+
+
+---
+
+## 2. Global community structure: PERMANOVA + dispersion
+
+The overall PERMANOVA on CLR‐transformed profiles shows that **clinical status explains a substantial fraction of the variance in community composition**:
+
+* **R² = 0.135, F = 12.5, p = 0.001** (999 permutations)
+
+In microbial ecology, an R² around 0.13 is a **strong effect**, indicating that BV/healthy/VVC status is a major driver of global microbiome differences rather than just noise.
+
+Pairwise PERMANOVA refines this:
+
+* **BBV vs BCONT:** R² ≈ **0.134**, FDR p = 0.001
+* **BBV vs BVVC:** R² ≈ **0.125**, FDR p = 0.001
+* **BCONT vs BVVC:** R² ≈ **0.041**, FDR p = 0.001
+
+So:
+
+* BV profiles differ strongly from both healthy controls and VVC (each explaining ~12–13% of variance).
+* Healthy controls and VVC differ only **weakly** (~4% of variance), even though the difference is statistically detectable.
+
+The **beta‐dispersion test** confirms that the **within‐group variability** also differs:
+
+* **F = 6.11, p = 0.004** for multivariate dispersion
+
+BV shows much higher dispersion (more spread around its centroid) than healthy or VVC, consistent with BV being an ecologically unstable, polymicrobial dysbiosis. This means the PERMANOVA signal reflects **both** a shift in average community structure and increased heterogeneity in BV, which is biologically expected rather than artifactual.
+
+
+---
+
+## 3. Feature-level differences: Dunn and Wilcoxon tests
+
+Univariate testing with **Dunn’s post-hoc test** and **Wilcoxon rank-sum tests** zooms in from community-level structure to **specific CLR features (candidate biomarkers)**.
+
+Across the top CLR features (CLR_1, CLR_3, CLR_17, CLR_43, CLR_14):
+
+* For **BV vs BCONT** and **BV vs BVVC**, both Dunn and Wilcoxon consistently yield **extremely small FDR-adjusted p-values** (typically **p.adj < 10⁻¹³** and often < 10⁻¹⁶), with large test statistics.
+* For **BCONT vs BVVC**, four of the five features show **no significant difference** (p.adj ≫ 0.05, “ns”), and only **CLR_14** shows a more modest, though significant, shift.
+
+The boxplots make these patterns very clear:
+
+* For **CLR_1, CLR_3, CLR_17, CLR_43**, BV samples are shifted strongly away from both healthy and VVC, while **healthy and VVC distributions largely overlap**.
+* **CLR_14** shows a gradient (BV highest, VVC intermediate, control lowest), explaining why the control–VVC comparison is significant for this one feature but not the others.
+
+In other words, the **key taxon-level changes are BV-specific**: these biomarkers sharply differentiate BV from the other two groups but do **not** meaningfully discriminate between healthy and VVC. Dunn and Wilcoxon provide convergent evidence for this, using complementary non-parametric frameworks.
+
+---
+
+## 4. Integrated biological picture
+
+Putting all of this together:
+
+* **BV** is characterized by a **large, global shift** in community structure (PERMANOVA R² ~ 0.13 vs both other groups), **greater beta-dispersion**, and **dramatic shifts in multiple CLR biomarkers**, consistent with a high-diversity, Lactobacillus-depleted dysbiosis.
+* **VVC** does **not** show strong bacterial community disruption:
+
+  * It clusters close to controls in PCA.
+  * Pairwise PERMANOVA effect size vs controls is small (R² ~ 0.04).
+  * Most top biomarkers are indistinguishable between VVC and controls on Dunn and Wilcoxon tests.
+* This aligns with the classical observation that **VVC is primarily a fungal disturbance superimposed on an otherwise Lactobacillus-dominated bacterial community**, whereas BV is a genuine bacterial community collapse and re-assembly.
+
+Thus, multivariate (PERMANOVA, PCA, dispersion) and univariate (Dunn, Wilcoxon) analyses are mutually reinforcing and biologically coherent.
+
+---
+
+## 5. Implications and predictions for downstream classification modelling
+
+Given these patterns, we can make concrete predictions about machine-learning performance:
+
+1. **BV vs non-BV classification (binary) should perform extremely well.**
+
+   * Strong global separation (R² ~ 0.13) and large per-feature shifts suggest **high AUC, accuracy, and recall** for BV.
+   * SHAP values for features like CLR_1, CLR_3, CLR_17, CLR_43, and CLR_14 should show large, consistent contributions for identifying BV samples.
+
+2. **Three-class classification (BBV vs BCONT vs BVVC) will mostly struggle at the boundary between BCONT and BVVC.**
+
+   * BV will be classified confidently and correctly most of the time.
+   * Misclassifications will predominantly be **healthy ↔ VVC**, reflecting their small effect size (R² ~ 0.04) and largely overlapping CLR distributions.
+
