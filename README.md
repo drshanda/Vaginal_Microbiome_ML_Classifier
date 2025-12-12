@@ -29,86 +29,39 @@ This work combines bioinformatics, statistical ecology, machine learning, and so
 
 ## 3. Repository Structure
 
-01_data/
-├── raw/
-│   ├── zmeh_a_11816030_sm0001.xlsx
-│   └── zmeh_a_11816030_sm0002.xlsx
-├── processed/
-│   └── final_ml_feature_matrix.csv.dvc
+📁 01_data/
+    ├── raw/                     # Raw microbiome input files
+    └── processed/               # DVC-tracked CLR feature matrix
 
-02_src/
-├── convert.py
-├── Python/
-│   ├── model_development_final.ipynb
-│   └── model_development_final.py
-└── R/
-    ├── microbiome_feature_analysis.Rmd
-    ├── microbiome_feature_analysis.R
-    ├── microbiome_feature_analysis.html
-    ├── microbiome_feature_analysis.tex
-    └── microbiome_feature_analysis.log
+📁 02_src/
+    ├── Python/                  # ML modeling and SHAP analysis
+    │     ├── model_development_final.ipynb
+    │     └── model_development_final.py
+    └── R/                       # Statistical microbiome analysis
+          └── microbiome_feature_analysis.Rmd
 
-03_results/
-├── figures/
-│   ├── clr1_dunn_test_results.png
-│   ├── clr3_dunn_test_results.png
-│   ├── clr14_dunn_test_results.png
-│   ├── clr17_dunn_test_results.png
-│   ├── clr43_dunn_test_results.png
-│   ├── pca_plot.png
-│   ├── rf_confusion_matrix.png
-│   ├── xgb_confusion_matrix.png
-│   ├── shap_summary_bar_class_0.png
-│   ├── shap_summary_bar_class_1.png
-│   ├── shap_summary_bar_class_2.png
-│   ├── shap_summary_dot_class_0.png
-│   ├── shap_summary_dot_class_1.png
-│   ├── shap_summary_dot_class_2.png
-│   ├── shap_force_sample_0_class_2.html
-│   ├── shap_dependence_CLR_1_class_0.png
-│   ├── shap_dependence_CLR_1_class_1.png
-│   ├── shap_dependence_CLR_1_class_2.png
-│   ├── shap_dependence_CLR_3_class_0.png
-│   ├── shap_dependence_CLR_3_class_1.png
-│   ├── shap_dependence_CLR_3_class_2.png
-│   ├── shap_dependence_CLR_14_class_0.png
-│   ├── shap_dependence_CLR_14_class_1.png
-│   ├── shap_dependence_CLR_14_class_2.png
-│   ├── shap_dependence_CLR_17_class_0.png
-│   ├── shap_dependence_CLR_17_class_1.png
-│   ├── shap_dependence_CLR_17_class_2.png
-│   ├── shap_dependence_CLR_43_class_0.png
-│   ├── shap_dependence_CLR_43_class_1.png
-│   └── shap_dependence_CLR_43_class_2.png
-└── tables/
-    ├── rf_classification_report.csv
-    ├── rf_confusion_matrix.csv
-    ├── xgb_classification_report.csv
-    ├── xgb_confusion_matrix.csv
-    └── top_5_shap_biomarkers.csv
+📁 03_results/
+    ├── figures/                 # PCA, confusion matrices, SHAP plots
+    └── tables/                  # Classification reports, SHAP rankings
 
-04_app_deployment/
-├── final_rf_model.pkl
-├── final_ml_feature_matrix.csv
-├── global.R
-├── server.R
-└── ui.R
+📁 04_app_deployment/
+    ├── ui.R                     # Shiny UI
+    ├── server.R                 # Shiny server logic
+    ├── global.R                 # App configuration
+    ├── final_rf_model.pkl       # Serialized model
+    └── www/                     # All displayed figures (PNG/HTML)
 
-docker/
-├── Dockerfile
-├── requirements.txt
-└── app/
-    ├── final_rf_model.pkl
-    └── inference.py
+📁 docker/
+    ├── Dockerfile               # Model inference container
+    ├── requirements.txt         # Python dependencies for Docker
+    └── app/
+          ├── inference.py
+          └── final_rf_model.pkl
 
-anaconda_projects/
-└── db/
-    └── project_filebrowser.db
+📁 mlruns/                       # MLflow experiment tracking
+📁 mlflow.db                    # MLflow SQLite backend
 
-mlruns/
-mlflow.db
-README.md
-
+README.md                        # Project overview & documentation
 
 ---
 
