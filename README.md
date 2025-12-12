@@ -29,41 +29,41 @@ This work combines bioinformatics, statistical ecology, machine learning, and so
 
 ## 3. Repository Structure
 
-📁 01_data/
-    ├── raw/                     # Raw microbiome input files
-    └── processed/               # DVC-tracked CLR feature matrix
+```
+01_data/
+├── raw/                     # Raw microbiome input files
+└── processed/               # DVC-tracked CLR feature matrix
 
-📁 02_src/
-    ├── Python/                  # ML modeling and SHAP analysis
-    │     ├── model_development_final.ipynb
-    │     └── model_development_final.py
-    └── R/                       # Statistical microbiome analysis
-          └── microbiome_feature_analysis.Rmd
+02_src/
+├── Python/                  # ML modeling and SHAP analysis
+│   ├── model_development_final.ipynb
+│   └── model_development_final.py
+└── R/                       # Statistical microbiome analysis
+    └── microbiome_feature_analysis.Rmd
 
-📁 03_results/
-    ├── figures/                 # PCA, confusion matrices, SHAP plots
-    └── tables/                  # Classification reports, SHAP rankings
+03_results/
+├── figures/                 # PCA, confusion matrices, SHAP plots
+└── tables/                  # Classification reports, SHAP rankings
 
-📁 04_app_deployment/
-    ├── ui.R                     # Shiny UI
-    ├── server.R                 # Shiny server logic
-    ├── global.R                 # App configuration
-    ├── final_rf_model.pkl       # Serialized model
-    └── www/                     # All displayed figures (PNG/HTML)
+04_app_deployment/
+├── ui.R                     # Shiny UI
+├── server.R                 # Shiny server logic
+├── global.R                 # App configuration
+├── final_rf_model.pkl       # Serialized Random Forest model
+└── www/                     # All displayed figures (PNG/HTML)
 
-📁 docker/
-    ├── Dockerfile               # Model inference container
-    ├── requirements.txt         # Python dependencies for Docker
-    └── app/
-          ├── inference.py
-          └── final_rf_model.pkl
+docker/
+├── Dockerfile               # Model inference container
+├── requirements.txt         # Python dependencies for Docker
+└── app/
+    ├── inference.py
+    └── final_rf_model.pkl
 
-📁 mlruns/                       # MLflow experiment tracking
-📁 mlflow.db                    # MLflow SQLite backend
+mlruns/                      # MLflow experiment tracking
+mlflow.db                    # MLflow SQLite backend
 
-README.md                        # Project overview & documentation
-
----
+README.md                    # Project overview & documentation
+```
 
 ## 4. Methods
 
