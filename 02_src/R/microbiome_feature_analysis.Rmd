@@ -71,6 +71,8 @@ metadata_aligned <- metadata_aligned[common_samples, ]
 ```
 
 ### 1.2 Data Filtering and Preparation
+
+Data was filtered so that an feature/OTU must appear in ≥5 samples and they must have ≥10 total reads across dataset.
 ```{r}
 min_prevalence <- 5 
 min_count <- 10    
@@ -195,9 +197,7 @@ ggsave("~/Vaginal_Microbiome_ML_Classifier/03_results/figures/pca_plot.png", plo
 
 ```
 
-PERMANOVA using CLR-transformed Aitchison distances demonstrated highly significant differences in microbiome composition between clinical groups. 
-  - Microbial community structure differed significantly between at least two clinical groups (p = 0.001).  
-  - ~13.5% of variation in global microbiome composition is explained by clinical classification (R² = 0.1348).  
+PERMANOVA using CLR-transformed Aitchison distances demonstrated highly significant differences in microbiome composition between clinical groups. Microbial community structure differed significantly between at least two clinical groups (p = 0.001). ~13.5% of variation in global microbiome composition is explained by clinical classification (R² = 0.1348).      
 
 
 ```{r}
@@ -211,17 +211,13 @@ permanova_result <- adonis2(dist_matrix ~ Status_Code, data = df_full, permutati
 print(permanova_result)
 
 ```
-A BETADISPER test was performed to ensure that PERMANOVA differences reflect true centroid separation and are not artifacts of differing dispersion.
-  - There is no significant difference in dispersion between groups (p = 0.073).  
-  - Therefore, the significant PERMANOVA findings reflect true compositional shifts, not variation in spread.
+A BETADISPER test was performed to ensure that PERMANOVA differences reflect true centroid separation and are not artifacts of differing dispersion. There is significant difference in dispersion between groups (p = 0.003). BV samples exhibited substantially greater dispersion compared with healthy or VVC samples, consistent with the known ecological instability of BV-associated microbiota.
   
 ```{r}
 dispersion <- betadisper(dist_matrix, df_full$Status_Code)
 betadisper_result <- permutest(dispersion, permutations = 999)
 print(betadisper_result)
 ```
-
-
 
 ### 2.2 Post-Hoc Pairwise PERMANOVA
 
@@ -267,26 +263,42 @@ print(pairwise_permanova_results)
 
 ## 3. Univariate Biomarker Validation
 
-### 3.1 Post-Hoc Dunn's Test
+### 3.1 Kruskal-Wallis Test 
+
+A Kruskal-Wallis test was performed to identify statistically significant differences in the relative abundance of the top 5 biomarkers in the dataset: CLR_1, CLR_14, CLR_17, CLR_3, and CLR_43. Across the top 5 biomarkers, there is a statistical significant result (p < 2.2e-16) indicating at least one group has a different microbial abundance compared to the others. Post-Hoc tests will be conducted next to determine which groups differ across the selected taxa. 
+
+
+```{r}
+top_biomarkers <- c("CLR_1", "CLR_14", "CLR_17", "CLR_3", "CLR_43")
+
+kw_results <- df_full %>%
+    select(Status_Code, all_of(top_biomarkers)) %>%
+    pivot_longer(-Status_Code, names_to = "Feature", values_to = "Value") %>%
+    group_by(Feature) %>%
+    kruskal.test(Value ~ Status_Code)
+
+print(kw_results)
+```
+
+ 
+### 3.2 Post-Hoc Dunn's Test
 
 Dunn’s post-hoc tests demonstrated that all top CLR biomarkers differed significantly between BV and both healthy controls and VVC (FDR < 1e-14), with effect directions consistent across features (e.g., CLR_1, CLR_17, CLR_3, and CLR_43 elevated in BV; CLR_14 reduced in BV). In contrast, none of these biomarkers differed significantly between healthy and VVC samples. This pattern confirms that BV produces strong taxon-specific shifts in abundance, while VVC maintains a Lactobacillus-dominated profile indistinguishable from healthy controls—consistent with ecological findings from prior studies.
 
 
 ```{r}
 
-top_biomarkers <- c("CLR_1", "CLR_14", "CLR_17", "CLR_3", "CLR_43")
 
 dunn_test_results <- df_full %>%
     select(Status_Code, all_of(top_biomarkers)) %>%
     pivot_longer(-Status_Code, names_to = "Feature", values_to = "Value") %>%
     group_by(Feature) %>%
-    # Performs Dunn's test for all pairs of groups, automatically applying FDR correction
     dunn_test(Value ~ Status_Code, p.adjust.method = "fdr")
 
 print(dunn_test_results)
 ```
 
-### 3.2 Visualization of Biomarker Distributions
+### 3.3 Visualization of Biomarker Distributions
 
 CLR-feature visualization with Dunn post-hoc tests revealed that all top biomarkers showed strong and significant differences between BV and both healthy controls and VVC (FDR < 1e−14). Boxplots demonstrated large effect sizes, with BV consistently exhibiting markedly lower CLR values for features such as CLR_14 and higher values for features such as CLR_1, CLR_17, CLR_3, and CLR_43. In contrast, no significant differences were observed between the control and VVC groups across these biomarkers (all FDR-adjusted p > 0.05). These findings reinforce the conclusion that BV induces pronounced taxon-level abundance changes, while VVC retains a Lactobacillus-dominated profile that is indistinguishable from the healthy community.
 
@@ -340,7 +352,7 @@ ggsave("../../03_results/figures/clr3_dunn_test_results.png", plot = clr3_plot)
 
 ```
 
-### 3.2 Pairwise Mann-Whitney U (Wilcoxon Rank-Sum) Tests (FDR Corrected)
+### 3.4 Pairwise Mann-Whitney U (Wilcoxon Rank-Sum) Tests (FDR Corrected)
 
 Wilcoxon rank-sum tests confirmed that all top CLR biomarkers differed significantly between BV and both healthy controls and VVC after FDR correction (p.adj < 1e−13). These results were consistent with Dunn post-hoc tests and revealed large, directionally consistent shifts in CLR abundance associated with BV. In contrast, none of the biomarkers differed significantly between healthy controls and VVC, reinforcing the conclusion that VVC does not produce detectable bacterial dysbiosis. Together, Wilcoxon and Dunn analyses provide strong, convergent evidence of feature-level disruptions specific to BV.
 
@@ -395,7 +407,7 @@ So:
 
 The **beta‐dispersion test** confirms that the **within‐group variability** also differs:
 
-* **F = 6.11, p = 0.004** for multivariate dispersion
+* **F = 6.0969, p = 0.003** for multivariate dispersion
 
 BV shows much higher dispersion (more spread around its centroid) than healthy or VVC, consistent with BV being an ecologically unstable, polymicrobial dysbiosis. This means the PERMANOVA signal reflects **both** a shift in average community structure and increased heterogeneity in BV, which is biologically expected rather than artifactual.
 
